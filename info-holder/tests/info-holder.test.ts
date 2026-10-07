@@ -36,7 +36,7 @@ test('items are added, edited and removed in the band', async ($, on) => {
   await ui.press({ key: 'add' })
   await ui.input({ key: 'edit:new', text: 'status paid, shipped on Monday' })
   expect(await ui.find({ key: 'item:order' })).toBeDefined()
-  expect(await ui.find({ key: 'item:note 1' })).toBeDefined()
+  expect((await ui.find({ key: 'item:note 1' }))?.props.label).toBe('status paid, shipped on Monday')
   expect(await ui.find({ type: 'Text', text: /Info holder \(2\)/ })).toBeDefined()
 
   await ui.press({ key: 'item:order' })
@@ -95,6 +95,8 @@ test('editChange keeps, renames, removes and adds', () => {
   expect(editChange(null, 'plain text', 'note 2')).toEqual({ remove: [], set: [{ key: 'note 2', value: 'plain text' }] })
   expect(editChange(null, 'https://x.dev/a', 'note 1')).toEqual({ remove: [], set: [{ key: 'note 1', value: 'https://x.dev/a' }] })
   expect(editChange(null, '  ')).toBeNull()
+  expect(editChange('note 1', 'see: https://x.dev')).toEqual({ remove: [], set: [{ key: 'note 1', value: 'see: https://x.dev' }] })
+  expect(editChange('note 1', ' ')).toEqual({ remove: ['note 1'] })
 })
 
 test('nextNoteKey skips taken keys', () => {

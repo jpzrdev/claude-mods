@@ -30,6 +30,9 @@ export function applyChange(items: readonly Item[], change: Change): Item[] {
   return next.slice(-MAX_ITEMS)
 }
 
+/** Whether a key was given by `nextNoteKey`: such an item shows and edits as its text alone. */
+export const isNoteKey = (key: string) => /^note \d+$/i.test(key)
+
 /** The first `note N` key not taken, for text pasted without a key. */
 export function nextNoteKey(items: readonly Item[]): string {
   const taken = new Set(items.map(item => item.key.toLowerCase()))
@@ -40,10 +43,14 @@ export function nextNoteKey(items: readonly Item[]): string {
 
 /**
  * An item edited in place, typed as `key: value` (or `key = value`). Editing `oldKey` (null for a new
- * item): text without a separator is its new value (a new item gets the `newKey` given), a new key
+ * item): a note's text is its new value whole; otherwise text without a separator is its new value (a new item gets the `newKey` given), a new key
  * renames it, and an empty value removes it.
  */
 export function editChange(oldKey: string | null, text: string, newKey = 'note'): Change | null {
+  // A note is edited as its text alone, so a `:` in it never renames it.
+  if (oldKey !== null && isNoteKey(oldKey)) {
+    return text.trim() === '' ? { remove: [oldKey] } : { remove: [], set: [{ key: oldKey, value: text }] }
+  }
   const at = text.search(/[:=]/)
   // A new item whose text has no separator, or one that reads like a URL, is kept whole as a note.
   if (oldKey === null && (at < 0 || /^\w+:\/\//.test(text.trim()))) {

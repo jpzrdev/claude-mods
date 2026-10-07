@@ -9,7 +9,7 @@ The info holder is for you only. Its items are never sent to the model: not with
 ## What it does
 
 - **A band above the prompt** lists the items, one line each, as `key: value`.
-- **+ Add** opens a field: paste text and press Enter. Type `key: value` (or `key = value`) to name it; text without a key (or a bare URL) is saved as `note 1`, `note 2`, and so on.
+- **+ Add** opens a field: paste text and press Enter. Type `key: value` (or `key = value`) to name it; text without a key (or a bare URL) is saved as a plain note and shown as its text alone.
 - **Click an item** to edit it in place. Change the key to rename it, or empty the value to remove it.
 - **▾ / ▸** collapses the band to its title.
 

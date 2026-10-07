@@ -2,7 +2,7 @@ import { atom, read, update } from 'claude-code'
 import type { Register } from 'claude-code'
 
 import type { Item } from '../types'
-import { applyChange, editChange, nextNoteKey, parseCommand, USAGE } from './items'
+import { applyChange, editChange, isNoteKey, nextNoteKey, parseCommand, USAGE } from './items'
 
 const items = atom({ plugin: 'info-holder', key: 'items' } as const, [] as Item[])
 const isMinimized = atom({ plugin: 'info-holder', key: 'isMinimized' } as const, false)
@@ -63,16 +63,18 @@ export const register: Register = on => {
     )
     // Stacked over what the plugins beneath draw (usage-bars, say), never in place of it.
     const below = next(e)
+    // A card of its own, apart from the cards beneath.
+    const cardProps = { flexDirection: 'column', borderStyle: 'round', borderDimColor: true, paddingX: 1 } as const
     if (isSmall) {
       return (
         <Box flexDirection="column">
-          {header}
+          <Box {...cardProps}>{header}</Box>
           {await below}
         </Box>
       )
     }
 
-    const width = Math.max(12, e.props.bodyColumns - 4)
+    const width = Math.max(12, e.props.bodyColumns - 8)
     const clip = (text: string) => (text.length > width ? `${text.slice(0, width - 1)}…` : text)
 
     const stopEditing = () => update($, editing, () => null)
@@ -95,16 +97,18 @@ export const register: Register = on => {
           <Button key={`cancel:${id}`} plain dimColor label="✕" onPress={stopEditing} />
         </Box>
       )
+    // A note pasted without a key shows as its text alone.
+    const shown = (item: Item) => (isNoteKey(item.key) ? item.value : `${item.key}: ${item.value}`)
     const isEditing = (item: Item) => edited !== null && edited.toLowerCase() === item.key.toLowerCase()
     const itemRow = (item: Item) => (
       <Box paddingLeft={2}>
         {isEditing(item) ? (
-          editor(item.key, item.key, `${item.key}: ${item.value}`)
+          editor(item.key, item.key, shown(item))
         ) : (
           <Button
             key={`item:${item.key}`}
             plain
-            label={clip(`${item.key}: ${item.value}`)}
+            label={clip(shown(item))}
             onPress={() => (Input ? update($, editing, () => item.key) : undefined)}
           />
         )}
@@ -122,7 +126,7 @@ export const register: Register = on => {
 
     return (
       <Box flexDirection="column">
-        <Box flexDirection="column">
+        <Box {...cardProps}>
           {header}
           {list.map(itemRow)}
           {adder}
