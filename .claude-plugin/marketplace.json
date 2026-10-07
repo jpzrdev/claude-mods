@@ -1,6 +1,8 @@
 {
   "name": "claude-mods",
-  "owner": { "name": "jpzrdev" },
+  "owner": {
+    "name": "jpzrdev"
+  },
   "metadata": {
     "description": "Mods for Claude Code: plugins of function hooks that add panes, bands and guards to the terminal and the desktop app."
   },
@@ -9,6 +11,11 @@
       "name": "case-facts",
       "source": "./case-facts",
       "description": "Keeps the current task's key facts in view, so they survive long sessions and compaction."
+    },
+    {
+      "name": "usage-bars",
+      "source": "./usage-bars",
+      "description": "Shows session (5h) and weekly usage as 0-100% bars, with the time left until each window resets."
     }
   ]
 }

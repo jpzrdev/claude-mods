@@ -1,0 +1,17 @@
+{
+  "name": "usage-bars",
+  "version": "0.2.0",
+  "description": "Shows session (5h) and weekly usage as 0-100% bars, with the time left until each window resets.",
+  "author": {
+    "name": "jpzrdev"
+  },
+  "repository": "https://github.com/jpzrdev/claude-mods",
+  "license": "MIT",
+  "keywords": [
+    "usage",
+    "rate limits",
+    "quota",
+    "reset"
+  ],
+  "types": "./types/index.d.ts"
+}
