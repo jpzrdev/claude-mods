@@ -72,9 +72,11 @@ export const register: Register = on => {
     const table = $.ui.resolve(e)
     const { Box, Text } = table
     const Svg = e.surface !== 'terminal' && 'Svg' in table ? table.Svg : undefined
+    // Stacked over what the plugins beneath draw (info-holder, say), never in place of it.
+    const below = next(e)
     const barColumns = Math.max(10, Math.min(48, e.props.bodyColumns - 40))
 
-    return (
+    const card = (
       <Box flexDirection="column" borderStyle="round" borderDimColor paddingX={1} gap={Svg ? 1 : 0}>
         <Box justifyContent="space-between">
           <Text bold>usage</Text>
@@ -112,6 +114,13 @@ export const register: Register = on => {
             </Box>
           )
         })}
+      </Box>
+    )
+
+    return (
+      <Box flexDirection="column">
+        {card}
+        {await below}
       </Box>
     )
   })

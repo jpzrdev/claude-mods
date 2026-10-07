@@ -61,7 +61,16 @@ export const register: Register = on => {
         <Text bold>Info holder ({list.length})</Text>
       </Box>
     )
-    if (isSmall) return header
+    // Stacked over what the plugins beneath draw (usage-bars, say), never in place of it.
+    const below = next(e)
+    if (isSmall) {
+      return (
+        <Box flexDirection="column">
+          {header}
+          {await below}
+        </Box>
+      )
+    }
 
     const width = Math.max(12, e.props.bodyColumns - 4)
     const clip = (text: string) => (text.length > width ? `${text.slice(0, width - 1)}…` : text)
@@ -113,9 +122,12 @@ export const register: Register = on => {
 
     return (
       <Box flexDirection="column">
-        {header}
-        {list.map(itemRow)}
-        {adder}
+        <Box flexDirection="column">
+          {header}
+          {list.map(itemRow)}
+          {adder}
+        </Box>
+        {await below}
       </Box>
     )
   })

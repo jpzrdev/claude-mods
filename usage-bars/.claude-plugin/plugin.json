@@ -1,6 +1,6 @@
 {
   "name": "usage-bars",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Shows session (5h) and weekly usage as 0-100% bars, with the time left until each window resets.",
   "author": {
     "name": "jpzrdev"
