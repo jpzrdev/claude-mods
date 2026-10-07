@@ -75,7 +75,7 @@ export const register: Register = on => {
       )
     }
 
-    const width = Math.max(12, e.props.bodyColumns - 14)
+    const width = Math.max(12, e.props.bodyColumns - 24)
     const clip = (text: string) => (text.length > width ? `${text.slice(0, width - 1)}…` : text)
 
     const stopEditing = () => update($, editing, () => null)
@@ -106,26 +106,22 @@ export const register: Register = on => {
       const { isCopied } = await $.ui.copy({ text: item.value, surface: e.surface })
       $.ui.toast(isCopied ? 'Copied.' : 'Could not copy.')
     }
-    const itemRow = (item: Item) => (
-      <Box paddingLeft={2} gap={1}>
-        {isEditing(item) ? (
-          editor(item.key, item.key, shown(item))
-        ) : (
-          <>
-            <Box flexGrow={1}>
-              <Button
-                key={`item:${item.key}`}
-                plain
-                label={clip(shown(item))}
-                onPress={() => (Input ? update($, editing, () => item.key) : undefined)}
-              />
-            </Box>
-            <Button key={`copy:${item.key}`} plain dimColor label="⧉" onPress={() => copy(item)} />
-            <Button key={`delete:${item.key}`} plain dimColor label="✕" onPress={() => remove(item)} />
-          </>
-        )}
-      </Box>
-    )
+    // The text, then its small copy and delete buttons beside it, on one row.
+    const itemRow = (item: Item) =>
+      isEditing(item) ? (
+        <Box paddingLeft={2}>{editor(item.key, item.key, shown(item))}</Box>
+      ) : (
+        <Box paddingLeft={2} flexDirection="row" alignItems="center" gap={1}>
+          <Button
+            key={`item:${item.key}`}
+            plain
+            label={clip(shown(item))}
+            onPress={() => (Input ? update($, editing, () => item.key) : undefined)}
+          />
+          <Button key={`copy:${item.key}`} variant="secondary" dimColor label="copy" onPress={() => copy(item)} />
+          <Button key={`delete:${item.key}`} variant="secondary" dimColor label="delete" onPress={() => remove(item)} />
+        </Box>
+      )
     const adder =
       Input &&
       (edited === '' ? (
