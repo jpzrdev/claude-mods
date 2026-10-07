@@ -42,6 +42,25 @@ test('items are added, edited and removed in the band', async ($, on) => {
   await ui.press({ key: 'item:order' })
   await ui.input({ key: 'edit:order', text: 'order:' })
   expect(await ui.find({ key: 'item:order' })).toBeUndefined()
+
+  await ui.press({ key: 'delete:note 1' })
+  expect(await ui.find({ key: 'item:note 1' })).toBeUndefined()
+  expect(await ui.find({ type: 'Text', text: /Info holder \(0\)/ })).toBeDefined()
+  await ui.unmount()
+})
+
+test('the copy button puts the text alone on the clipboard', async ($, on) => {
+  engine(on)
+  const copies: string[] = []
+  on('ui.copy', async (_, e) => {
+    copies.push(e.text)
+    return { value: { isCopied: true } }
+  })
+  const ui = await mount($)
+  await ui.press({ key: 'add' })
+  await ui.input({ key: 'edit:new', text: 'order: 48213' })
+  await ui.press({ key: 'copy:order' })
+  expect(copies).toEqual(['48213'])
   await ui.unmount()
 })
 

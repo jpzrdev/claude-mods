@@ -11,6 +11,7 @@ The info holder is for you only. Its items are never sent to the model: not with
 - **A band above the prompt** lists the items, one line each, as `key: value`.
 - **+ Add** opens a field: paste text and press Enter. Type `key: value` (or `key = value`) to name it; text without a key (or a bare URL) is saved as a plain note and shown as its text alone.
 - **Click an item** to edit it in place. Change the key to rename it, or empty the value to remove it.
+- **⧉** copies an item's text (its value, without the key) to the clipboard; **✕** deletes the item.
 - **▾ / ▸** collapses the band to its title.
 
 Long values are cut off with `…` in the list; click the item to see all of it. Each item is one line of up to 2,000 characters. Items belong to the session and survive `/clear`.

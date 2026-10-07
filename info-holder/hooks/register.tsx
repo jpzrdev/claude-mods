@@ -66,15 +66,16 @@ export const register: Register = on => {
     // A card of its own, apart from the cards beneath.
     const cardProps = { flexDirection: 'column', borderStyle: 'round', borderDimColor: true, paddingX: 1 } as const
     if (isSmall) {
+      const rest = await below
       return (
-        <Box flexDirection="column">
+        <Box flexDirection="column" gap={rest ? 1 : 0}>
           <Box {...cardProps}>{header}</Box>
-          {await below}
+          {rest}
         </Box>
       )
     }
 
-    const width = Math.max(12, e.props.bodyColumns - 8)
+    const width = Math.max(12, e.props.bodyColumns - 14)
     const clip = (text: string) => (text.length > width ? `${text.slice(0, width - 1)}…` : text)
 
     const stopEditing = () => update($, editing, () => null)
@@ -100,17 +101,28 @@ export const register: Register = on => {
     // A note pasted without a key shows as its text alone.
     const shown = (item: Item) => (isNoteKey(item.key) ? item.value : `${item.key}: ${item.value}`)
     const isEditing = (item: Item) => edited !== null && edited.toLowerCase() === item.key.toLowerCase()
+    const remove = (item: Item) => update($, items, now => applyChange(now, { remove: [item.key] }))
+    const copy = async (item: Item) => {
+      const { isCopied } = await $.ui.copy({ text: item.value, surface: e.surface })
+      $.ui.toast(isCopied ? 'Copied.' : 'Could not copy.')
+    }
     const itemRow = (item: Item) => (
-      <Box paddingLeft={2}>
+      <Box paddingLeft={2} gap={1}>
         {isEditing(item) ? (
           editor(item.key, item.key, shown(item))
         ) : (
-          <Button
-            key={`item:${item.key}`}
-            plain
-            label={clip(shown(item))}
-            onPress={() => (Input ? update($, editing, () => item.key) : undefined)}
-          />
+          <>
+            <Box flexGrow={1}>
+              <Button
+                key={`item:${item.key}`}
+                plain
+                label={clip(shown(item))}
+                onPress={() => (Input ? update($, editing, () => item.key) : undefined)}
+              />
+            </Box>
+            <Button key={`copy:${item.key}`} plain dimColor label="⧉" onPress={() => copy(item)} />
+            <Button key={`delete:${item.key}`} plain dimColor label="✕" onPress={() => remove(item)} />
+          </>
         )}
       </Box>
     )
@@ -124,14 +136,15 @@ export const register: Register = on => {
         </Box>
       ))
 
+    const rest = await below
     return (
-      <Box flexDirection="column">
+      <Box flexDirection="column" gap={rest ? 1 : 0}>
         <Box {...cardProps}>
           {header}
           {list.map(itemRow)}
           {adder}
         </Box>
-        {await below}
+        {rest}
       </Box>
     )
   })

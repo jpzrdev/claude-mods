@@ -117,10 +117,12 @@ export const register: Register = on => {
       </Box>
     )
 
+    // A blank row apart from the cards beneath, when there are any.
+    const rest = await below
     return (
-      <Box flexDirection="column">
+      <Box flexDirection="column" gap={rest ? 1 : 0}>
         {card}
-        {await below}
+        {rest}
       </Box>
     )
   })
