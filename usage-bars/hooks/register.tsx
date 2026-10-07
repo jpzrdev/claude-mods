@@ -7,6 +7,11 @@ import type { Level } from './format'
 import { BAR_HEIGHT, barSvg } from './svg'
 
 const usage = atom({ plugin: 'usage-bars', key: 'usage' } as const, { limits: [], now: 0 } as Usage)
+const isHidden = atom({ plugin: 'usage-bars', key: 'isHidden' } as const, false)
+
+// `/usage` is built in, so the command takes the mod's name.
+const COMMAND = 'usage-bars'
+const HIDDEN_KEY = 'isHidden'
 
 const TERMINAL_COLOR: Record<Level, string> = { ok: 'suggestion', high: 'warning', critical: 'error' }
 
@@ -16,8 +21,17 @@ const plain = (limits: readonly Limit[]): Limit[] =>
 export const register: Register = on => {
   on('session.start', async ($, e, next) => {
     const result = await next(e)
-    const [{ rateLimits }, now] = await Promise.all([$.session.usage(), $.clock.now()])
+    await $.command.register({
+      name: COMMAND,
+      description: 'Show or hide the usage card above the prompt (show | hide; no argument toggles)',
+    })
+    const [{ rateLimits }, now, hidden] = await Promise.all([
+      $.session.usage(),
+      $.clock.now(),
+      $.store.get(HIDDEN_KEY),
+    ])
     await update($, usage, () => ({ limits: plain(rateLimits), now }))
+    await update($, isHidden, () => hidden === true)
 
     // Keeps the reset countdown current.
     $.clock.every(30_000, async () => {
@@ -37,9 +51,21 @@ export const register: Register = on => {
     return next(e)
   })
 
+  on('command.run', { command: COMMAND }, async ($, e) => {
+    const arg = e.args.trim().toLowerCase()
+    if (arg !== '' && arg !== 'show' && arg !== 'hide') {
+      return { text: `Usage: /${COMMAND} [show | hide]` }
+    }
+    const hide = arg === '' ? !(await read($, isHidden)) : arg === 'hide'
+    await update($, isHidden, () => hide)
+    await $.store.set(HIDDEN_KEY, hide)
+
+    return { text: hide ? `Usage card hidden. /${COMMAND} brings it back.` : 'Usage card shown.' }
+  })
+
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
     const { limits, now } = await read($, usage)
-    if (e.props.hasSurvey || limits.length === 0) {
+    if (e.props.hasSurvey || limits.length === 0 || (await read($, isHidden))) {
       return next(e)
     }
 

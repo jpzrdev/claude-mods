@@ -11,6 +11,16 @@ Shows your Claude plan's usage limits above the prompt: how much of the 5-hour s
 
 The figures are the ones the status line has: the windows the last API response reported. The card stays hidden until the first response arrives, and off a subscription plan, where there are no such windows.
 
+## Show or hide it
+
+```
+/usage-bars          toggles the card
+/usage-bars hide     hides it
+/usage-bars show     shows it again
+```
+
+The choice is remembered across sessions. (The command isn't `/usage`, which Claude Code already has.)
+
 ## Install
 
 In a terminal session of Claude Code:

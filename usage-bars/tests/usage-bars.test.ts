@@ -1,5 +1,6 @@
-import type { RenderElement } from 'claude-code'
+import type { On, RenderElement } from 'claude-code'
 import { expect, mock, test } from 'claude-code/testing'
+import type { Engine } from 'claude-code/testing'
 
 import { cells, level, untilReset } from '../hooks/format'
 import { barSvg } from '../hooks/svg'
@@ -31,8 +32,10 @@ test('time until reset', () => {
   expect(untilReset(undefined, NOW)).toBe('')
 })
 
-test('the band shows session and weekly usage with percent and reset', async ($, on) => {
+/** Stands for the engine beneath the plugin, with a reading of both windows taken. */
+async function engine($: Engine, on: On) {
   const clock = mock.clock(on, { now: NOW })
+  mock.store(on)
   on('session.measure', ($, e) => ({ changed: e.changed }))
   on('ui.render', ($, e) => {
     const { Box } = $.ui.resolve(e)
@@ -48,6 +51,25 @@ test('the band shows session and weekly usage with percent and reset', async ($,
     changed: ['rateLimits'],
   })
   await clock.settle()
+}
+
+const usageBars = ($: Engine, args: string) =>
+  $.command.run({
+    command: 'usage-bars',
+    args,
+    origin: { kind: 'composer' },
+    presentation: { isFullscreen: false, columns: 120 },
+  })
+
+const isShown = async ($: Engine) => {
+  const ui = await $.ui.mount({ plugin: 'usage-bars', surface: 'terminal', ...BAND })
+  const found = await ui.find({ type: 'Text', text: /Weekly/ })
+  await ui.unmount()
+  return found !== undefined
+}
+
+test('the band shows session and weekly usage with percent and reset', async ($, on) => {
+  await engine($, on)
 
   for (const surface of ['terminal', 'desktop'] as const) {
     const ui = await $.ui.mount({ plugin: 'usage-bars', surface, ...BAND })
@@ -61,4 +83,24 @@ test('the band shows session and weekly usage with percent and reset', async ($,
     }
     await ui.unmount()
   }
+})
+
+test('/usage-bars toggles the card, and show or hide set it', async ($, on) => {
+  await engine($, on)
+  expect(await isShown($)).toBe(true)
+
+  expect((await usageBars($, '')).text).toContain('hidden')
+  expect(await isShown($)).toBe(false)
+
+  await usageBars($, '')
+  expect(await isShown($)).toBe(true)
+
+  await usageBars($, 'hide')
+  await usageBars($, 'hide')
+  expect(await isShown($)).toBe(false)
+
+  await usageBars($, 'show')
+  expect(await isShown($)).toBe(true)
+
+  expect((await usageBars($, 'nope')).text).toBe('Usage: /usage-bars [show | hide]')
 })

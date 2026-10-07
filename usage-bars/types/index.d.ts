@@ -3,6 +3,6 @@ export type Usage = { limits: Limit[]; now: number }
 
 declare module 'claude-code' {
   interface PluginState {
-    'usage-bars': { usage: Usage }
+    'usage-bars': { usage: Usage; isHidden: boolean }
   }
 }
