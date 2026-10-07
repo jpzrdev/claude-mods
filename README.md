@@ -6,7 +6,7 @@ Mods for [Claude Code](https://claude.com/claude-code): plugins of function hook
 
 | Mod | What it does |
 | --- | --- |
-| [case-facts](./case-facts) | Keeps the current task's key facts in view: the model records them, they are restated before they are forgotten, and a band above the prompt shows and edits them. |
+| [info-holder](./info-holder) | A notepad above the prompt: paste information you want at hand during a long session. It is never sent to the model. |
 | [usage-bars](./usage-bars) | Shows session (5h) and weekly usage above the prompt as 0-100% bars, with the time left until each window resets. |
 
 ## Install

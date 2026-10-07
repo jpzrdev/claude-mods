@@ -8,9 +8,9 @@
   },
   "plugins": [
     {
-      "name": "case-facts",
-      "source": "./case-facts",
-      "description": "Keeps the current task's key facts in view, so they survive long sessions and compaction."
+      "name": "info-holder",
+      "source": "./info-holder",
+      "description": "A notepad above the prompt: paste information you want at hand during a long session. It is never sent to the model."
     },
     {
       "name": "usage-bars",
