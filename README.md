@@ -6,7 +6,7 @@ Mods for [Claude Code](https://claude.com/claude-code): plugins of function hook
 
 | Mod | What it does |
 | --- | --- |
-| [info-holder](./info-holder) | A notepad above the prompt: paste information you want at hand during a long session. It is never sent to the model. |
+| [pin-me](./pin-me) | Pin messages of a long session and find them again in one click, and keep notes at hand above the prompt. Nothing it holds is sent to the model. |
 | [usage-bars](./usage-bars) | Shows session (5h) and weekly usage above the prompt as 0-100% bars, with the time left until each window resets. |
 
 ## Install

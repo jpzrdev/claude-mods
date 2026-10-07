@@ -72,7 +72,7 @@ export const register: Register = on => {
     const table = $.ui.resolve(e)
     const { Box, Text } = table
     const Svg = e.surface !== 'terminal' && 'Svg' in table ? table.Svg : undefined
-    // Stacked over what the plugins beneath draw (info-holder, say), never in place of it.
+    // Stacked over what the plugins beneath draw (pin-me, say), never in place of it.
     const below = next(e)
     const barColumns = Math.max(10, Math.min(48, e.props.bodyColumns - 40))
 

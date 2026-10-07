@@ -1,0 +1,10 @@
+{
+  "name": "pin-me",
+  "version": "0.2.0",
+  "description": "Pin messages of a long session and find them again in one click, and keep notes at hand above the prompt. Nothing it holds is sent to the model.",
+  "author": { "name": "jpzrdev" },
+  "repository": "https://github.com/jpzrdev/claude-mods",
+  "license": "MIT",
+  "keywords": ["pin", "bookmark", "notes", "notepad", "navigation"],
+  "types": "./types/index.d.ts"
+}

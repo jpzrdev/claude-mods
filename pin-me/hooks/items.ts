@@ -66,7 +66,7 @@ export function editChange(oldKey: string | null, text: string, newKey = 'note')
 }
 
 /**
- * `/info` arguments: `` (toggle), `hide`, `show`, `clear`. Items are added and edited in the band only:
+ * `/pin-me` arguments: `` (toggle), `hide`, `show`, `clear`. Items are added and edited in the band only:
  * a command's text and output enter the conversation, and the items must not.
  */
 export type Command = { kind: 'toggle' } | { kind: 'hide' } | { kind: 'show' } | { kind: 'clear' } | { kind: 'usage' }
@@ -79,4 +79,37 @@ export function parseCommand(args: string): Command {
   return { kind: 'usage' }
 }
 
-export const USAGE = 'Usage: /info [hide | show | clear]. Add and edit items in the band above the prompt.'
+export const USAGE = 'Usage: /pin-me [hide | show | clear]. Add and edit items in the band above the prompt.'
+
+/** A pinned message's item key: `#` and the last six letters or digits of its row id, what the row shows to search for. */
+export function pinTag(messageId: string): string {
+  return `#${messageId.replace(/[^0-9a-z]/gi, '').slice(-6).toLowerCase()}`
+}
+
+/** Whether an item is a pinned message (its key a `pinTag`). */
+export const isPinKey = (key: string) => /^#[0-9a-z]{6}$/.test(key)
+
+/**
+ * Words of a message the app's find will match: the first run, on one line, with no markdown in it
+ * (the find searches the text as shown), cut at a word to `length`.
+ */
+export function findText(text: string, length = 40): string {
+  const runs = text
+    .split(/\]\(.*?\)|\n|[*`_[\]<>|#]+/)
+    .map(run => run.replace(/^\s*(?:[-+]|\d+\.)\s+/, '').replace(/\s+/g, ' ').trim())
+    .filter(run => run !== '')
+  const run = runs.find(one => one.length >= 12) ?? runs[0] ?? ''
+  if (run.length <= length) return run
+  const cut = run.slice(0, length)
+  if (run[length] === ' ') return cut
+  const at = cut.lastIndexOf(' ')
+  return at >= 12 ? cut.slice(0, at) : cut
+}
+
+/** A pinned message's item value: who wrote it, then the words the find button searches for. */
+export function pinLabel(role: 'user' | 'assistant', text: string): string {
+  return `${role === 'user' ? 'you' : 'claude'}: ${findText(text) || '(empty message)'}`
+}
+
+/** What the find button searches for: a pin's value less who wrote it. */
+export const pinSearch = (value: string) => value.replace(/^(?:you|claude): /, '')

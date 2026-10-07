@@ -8,9 +8,9 @@
   },
   "plugins": [
     {
-      "name": "info-holder",
-      "source": "./info-holder",
-      "description": "A notepad above the prompt: paste information you want at hand during a long session. It is never sent to the model."
+      "name": "pin-me",
+      "source": "./pin-me",
+      "description": "Pin messages of a long session and find them again in one click, and keep notes at hand above the prompt. Nothing it holds is sent to the model."
     },
     {
       "name": "usage-bars",
