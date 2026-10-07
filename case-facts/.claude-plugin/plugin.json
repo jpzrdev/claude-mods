@@ -1,0 +1,10 @@
+{
+  "name": "case-facts",
+  "version": "0.1.0",
+  "description": "Keeps the current task's key facts in view: the model records them, they are restated in the conversation before they are forgotten, and a band above the prompt shows and edits them.",
+  "author": { "name": "jpzrdev" },
+  "repository": "https://github.com/jpzrdev/claude-mods",
+  "license": "MIT",
+  "keywords": ["context", "memory", "compaction", "facts"],
+  "types": "./types/index.d.ts"
+}

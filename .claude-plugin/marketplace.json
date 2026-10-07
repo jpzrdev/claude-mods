@@ -1,0 +1,14 @@
+{
+  "name": "claude-mods",
+  "owner": { "name": "jpzrdev" },
+  "metadata": {
+    "description": "Mods for Claude Code: plugins of function hooks that add panes, bands and guards to the terminal and the desktop app."
+  },
+  "plugins": [
+    {
+      "name": "case-facts",
+      "source": "./case-facts",
+      "description": "Keeps the current task's key facts in view, so they survive long sessions and compaction."
+    }
+  ]
+}

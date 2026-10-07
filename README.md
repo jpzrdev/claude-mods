@@ -1,0 +1,36 @@
+# claude-mods
+
+Mods for [Claude Code](https://claude.com/claude-code): plugins of function hooks that add bands, panes, commands and guards to the terminal and the desktop app.
+
+## Mods
+
+| Mod | What it does |
+| --- | --- |
+| [case-facts](./case-facts) | Keeps the current task's key facts in view: the model records them, they are restated before they are forgotten, and a band above the prompt shows and edits them. |
+
+## Install
+
+This repository is a plugin marketplace. Install a mod by name, in a terminal session of Claude Code:
+
+```
+/plugin install <mod> --marketplace jpzrdev/claude-mods
+```
+
+Answer `y` to add the marketplace, then choose a scope (user: every project; project: this repository only). Mods installed at the user scope also load in the desktop app's Code tab.
+
+To browse every mod instead, add the marketplace once and open the plugin menu:
+
+```
+/plugin marketplace add jpzrdev/claude-mods
+/plugin
+```
+
+Update installed mods with `claude plugin update`.
+
+## Compatibility
+
+Built and tested on Claude Code 2.1.293. The mods API is early access and may change between releases; each mod's README says what it was tested on.
+
+## License
+
+MIT
